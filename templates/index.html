@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Speech Dictation Engine</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🎤 AI Speech Dictation Engine</h1>
+
+        <a href="/history">
+            <button class="history-btn">View History</button>
+        </a>
+    </div>
+
+    <div class="app-container">
+
+        <!-- Controls -->
+        <div class="controls">
+            <button onclick="startDictation()" class="start-btn">Start Dictation</button>
+            <button onclick="stopDictation()" class="stop-btn">Stop</button>
+        </div>
+
+        <!-- Live Transcript -->
+        <div class="card">
+            <h3>Live Transcript</h3>
+
+            <div class="mic-area">
+                <div class="wave"></div>
+                <div class="mic-icon" id="micIcon">🎤</div>
+                <div class="wave"></div>
+            </div>
+
+            <p id="listeningIndicator" class="listening">
+                🎤 AI is listening...
+            </p>
+
+            <textarea id="liveText" placeholder="Your speech will appear here..."></textarea>
+        </div>
+
+        <!-- Clean Output -->
+        <div class="card">
+            <h3>Clean Output</h3>
+            <div id="cleanOutput" class="output"></div>
+        </div>
+
+        <!-- Upload Audio -->
+        <div class="card">
+            <h3>Upload Audio File</h3>
+
+            <form action="/upload" method="post" enctype="multipart/form-data">
+
+                <input type="file" name="audio" required>
+
+                <button class="upload-btn">Upload & Convert</button>
+
+            </form>
+        </div>
+
+    </div>
+
+    <script src="/static/live.js"></script>
+
+</body>
+
+</html>
