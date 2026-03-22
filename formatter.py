@@ -1,11 +1,7 @@
 import language_tool_python
 
-tool = language_tool_python.LanguageTool('en-US')
+tool = language_tool_python.LanguageToolPublicAPI('en-US')
 
 def correct_grammar(text):
-
     matches = tool.check(text)
-
-    corrected = language_tool_python.utils.correct(text, matches)
-
-    return corrected
+    return language_tool_python.utils.correct(text, matches)
