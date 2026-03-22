@@ -1,10 +1,7 @@
-import os
 from pymongo import MongoClient
 
-mongo_uri = os.environ.get("MONGO_URI")
+client = MongoClient("mongodb+srv://sumera0904_db_user:MHmbBNlunhfqQj2y@speech-dictation-cluste.3q5hteo.mongodb.net/?appName=speech-dictation-cluster")
 
-client = MongoClient(os.getenv("MONGO_URI"))
-
-db = client["speech_db"]
+db = client["speech_dictation"]
 
 collection = db["transcripts"]
