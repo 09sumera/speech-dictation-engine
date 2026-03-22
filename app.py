@@ -65,7 +65,7 @@ def upload():
     filepath = os.path.join(UPLOAD_FOLDER, audio.filename)
     audio.save(filepath)
 
-    raw_text = speech_to_text(filepath)
+    raw_text = transcribe_audio(filepath)
 
     clean_text = process_text(raw_text, "formal")
 
@@ -165,6 +165,9 @@ def search():
         }).sort("_id",-1))
 
     return render_template("history.html", transcripts=transcripts, search=query)
+@app.route("/test")
+def test():
+    return "Server is running!"
 
 # -------------------------------
 # Run server
