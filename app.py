@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify, Response
 from bson import ObjectId
-from stt_engine import speech_to_text
+from stt_engine import transcribe_audio
 from pipeline import process_text
 from db import collection
 import os
