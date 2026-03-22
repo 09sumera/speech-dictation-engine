@@ -1,12 +1,15 @@
 from faster_whisper import WhisperModel
 
-model = WhisperModel("tiny")
+model = None
 
-def speech_to_text(audio_path):
-    segments, info = model.transcribe(audio_path)
+def get_model():
+    global model
+    if model is None:
+        model = WhisperModel("tiny", device="cpu")
+    return model
 
-    text = ""
-    for segment in segments:
-        text += segment.text
-
+def transcribe_audio(file_path):
+    model = get_model()
+    segments, info = model.transcribe(file_path)
+    text = " ".join([segment.text for segment in segments])
     return text
