@@ -1,7 +1,7 @@
-flask
+Flask
 pymongo
 dnspython
+faster-whisper
 ctranslate2
-numpy
-torch
 onnxruntime
+numpy
