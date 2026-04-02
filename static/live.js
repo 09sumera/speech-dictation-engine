@@ -9,7 +9,7 @@ if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
 
     recognition.continuous = true;
-    recognition.interimResults = true;
+    recognition.interimResults = false; // FIX: disable interim results for mobile stability
     recognition.lang = "en-US";
 
     // When recording starts
@@ -20,22 +20,24 @@ if ('webkitSpeechRecognition' in window) {
     // When speech result comes
     recognition.onresult = function (event) {
 
-        let interimTranscript = "";
-
         for (let i = event.resultIndex; i < event.results.length; i++) {
 
             let text = event.results[i][0].transcript;
 
             if (event.results[i].isFinal) {
 
-                finalTranscript += text + " ";
-                let fullText = finalTranscript + interimTranscript;
+                // Prevent duplicate phrases
+                if (!finalTranscript.includes(text)) {
+                    finalTranscript += text + " ";
+                }
+
+                let fullText = finalTranscript.trim();
                 lastSpokenText = fullText;
 
-                // Show live transcript
+                // Show transcript
                 document.getElementById("liveText").value = fullText;
 
-                // ALWAYS get tone from dropdown
+                // Get tone
                 const toneSelect = document.getElementById("toneSelect");
                 let selectedTone = "formal";
 
@@ -45,7 +47,7 @@ if ('webkitSpeechRecognition' in window) {
 
                 console.log("Tone being sent:", selectedTone);
 
-                // Send text to backend ONLY when final
+                // Send to backend
                 fetch("/process_text", {
                     method: "POST",
                     headers: {
@@ -67,14 +69,8 @@ if ('webkitSpeechRecognition' in window) {
                     .catch(error => {
                         console.error("Backend error:", error);
                     });
-
-            } else {
-                interimTranscript += text;
             }
         }
-
-        document.getElementById("liveText").value = finalTranscript + interimTranscript;
-
     };
 
     // Error handling
@@ -97,6 +93,8 @@ if ('webkitSpeechRecognition' in window) {
 function startDictation() {
 
     finalTranscript = "";
+
+    document.getElementById("liveText").value = "";
 
     document.getElementById("listeningIndicator").style.display = "block";
 

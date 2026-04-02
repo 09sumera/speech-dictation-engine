@@ -9,83 +9,94 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
 <body>
 
-    <!-- Header -->
+    <div class="app-container">
 
-    <div class="header">
+        <!-- Header -->
 
-        <h1>📜 Transcript History</h1>
+        <div class="header">
 
-        <a href="/">
-            <button class="history-btn">← Back Home</button>
-        </a>
+            <h1>📜 Transcript History</h1>
+
+            <a href="/">
+                <button class="history-btn">← Back Home</button>
+            </a>
+
+        </div>
+
+
+        <!-- History Container -->
+
+        <div class="history-wrapper">
+
+            <!-- Search bar -->
+
+            <div class="search-box">
+
+                <input type="text" id="searchInput" placeholder="Search transcripts..."
+                    value="{{ search if search else '' }}">
+
+                <button onclick="searchTranscript()">Search</button>
+
+            </div>
+
+
+            <!-- History Cards -->
+
+            {% for t in transcripts %}
+
+            <div class="history-card">
+
+                <!-- Raw Speech -->
+
+                <div class="section">
+
+                    <h3>Raw Speech</h3>
+
+                    <p>{{ t.raw_text }}</p>
+
+                </div>
+
+
+                <!-- Clean Text -->
+
+                <div class="section">
+
+                    <h3>Clean Text</h3>
+
+                    <p>{{ t.clean_text }}</p>
+
+                </div>
+
+
+                <!-- Download Button -->
+
+                <div class="section">
+
+                    <a href="/download/{{ t._id }}">
+
+                        <button class="download-btn">
+                            Download Transcript
+                        </button>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
 
     </div>
 
 
-    <!-- History Container -->
-
-    <div class="history-wrapper">
-
-        <!-- Search bar -->
-
-        <div class="search-box">
-
-            <input type="text" id="searchInput" placeholder="Search transcripts..."
-                value="{{ search if search else '' }}">
-
-            <button onclick="searchTranscript()">Search</button>
-
-        </div>
-
-        {% for t in transcripts %}
-
-        <div class="history-card">
-
-            <!-- Raw Speech -->
-
-            <div class="section">
-
-                <h3>Raw Speech</h3>
-
-                <p>{{ t.raw_text }}</p>
-
-            </div>
-
-
-            <!-- Clean Text -->
-
-            <div class="section">
-
-                <h3>Clean Text</h3>
-
-                <p>{{ t.clean_text }}</p>
-
-            </div>
-
-
-            <!-- Download Button -->
-
-            <div class="section">
-
-                <a href="/download/{{ t._id }}">
-
-                    <button class="download-btn">
-                        Download Transcript
-                    </button>
-
-                </a>
-
-            </div>
-
-        </div>
-
-        {% endfor %}
-
-    </div>
     <script>
 
         function searchTranscript() {
@@ -97,7 +108,7 @@
         }
 
     </script>
-</body>
 
+</body>
 
 </html>
