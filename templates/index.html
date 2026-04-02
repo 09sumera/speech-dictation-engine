@@ -11,25 +11,35 @@
 
 <body>
 
-    <!-- Header -->
-    <div class="header">
+    <!-- HEADER -->
+    <header class="header">
         <h1>🎤 AI Speech Dictation Engine</h1>
 
         <a href="/history">
-            <button class="history-btn">View History</button>
+            <button class="history-btn">History</button>
         </a>
-    </div>
+    </header>
 
-    <div class="app-container">
 
-        <!-- Controls -->
+    <main class="app-container">
+
+        <!-- CONTROLS -->
         <div class="controls">
-            <button onclick="startDictation()" class="start-btn">Start Dictation</button>
-            <button onclick="stopDictation()" class="stop-btn">Stop</button>
+
+            <button onclick="startDictation()" class="start-btn">
+                🎤 Start Recording
+            </button>
+
+            <button onclick="stopDictation()" class="stop-btn">
+                ⛔ Stop
+            </button>
+
         </div>
 
-        <!-- Live Transcript -->
-        <div class="card">
+
+        <!-- LIVE TRANSCRIPT -->
+        <section class="card">
+
             <h3>Live Transcript</h3>
 
             <div class="mic-area">
@@ -39,32 +49,57 @@
             </div>
 
             <p id="listeningIndicator" class="listening">
-                🎤 AI is listening...
+                🎧 Listening...
             </p>
 
-            <textarea id="liveText" placeholder="Your speech will appear here..."></textarea>
+            <textarea id="liveText" placeholder="Start speaking and your speech will appear here..."></textarea>
+
+        </section>
+        <div class="card">
+
+            <h3>Select Tone</h3>
+
+            <select id="toneSelect">
+
+                <option value="formal">Formal</option>
+                <option value="casual">Casual</option>
+                <option value="neutral">Neutral</option>
+                <option value="concise">Concise</option>
+                <option value="professional">Professional</option>
+                <option value="email">Email Style</option>
+
+            </select>
+
         </div>
 
-        <!-- Clean Output -->
-        <div class="card">
+        <!-- CLEAN OUTPUT -->
+        <section class="card">
+
             <h3>Clean Output</h3>
-            <div id="cleanOutput" class="output"></div>
-        </div>
 
-        <!-- Upload Audio -->
-        <div class="card">
+            <div class="output" id="cleanOutput"></div>
+
+        </section>
+
+
+        <!-- FILE UPLOAD -->
+        <section class="card">
+
             <h3>Upload Audio File</h3>
 
             <form action="/upload" method="post" enctype="multipart/form-data">
 
                 <input type="file" name="audio" required>
 
-                <button class="upload-btn">Upload & Convert</button>
+                <button class="upload-btn">
+                    Upload & Convert
+                </button>
 
             </form>
-        </div>
 
-    </div>
+        </section>
+
+    </main>
 
     <script src="/static/live.js"></script>
 

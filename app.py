@@ -28,24 +28,34 @@ def home():
 @app.route("/process_text", methods=["POST"])
 def process_live_text():
 
-    data = request.get_json()
+    # Get JSON data from frontend
+    data = request.get_json() or {}
 
-    raw_text = data.get("text", "")
+    raw_text = data.get("text", "").strip()
+    tone = data.get("tone", "formal").lower()   # normalize tone
 
-    if raw_text.strip() == "":
+    # If no speech text
+    if raw_text == "":
         return jsonify({"cleaned": ""})
 
-    clean_text = process_text(raw_text, "formal")
+    # Process text through pipeline
+    clean_text = process_text(raw_text, tone)
 
+    # Save transcript in MongoDB
     try:
         collection.insert_one({
             "raw_text": raw_text,
-            "clean_text": clean_text
+            "clean_text": clean_text,
+            "tone": tone
         })
     except Exception as e:
         print("MongoDB Error:", e)
 
-    return jsonify({"cleaned": clean_text})
+    # Send cleaned text back to frontend
+    return jsonify({
+        "cleaned": clean_text,
+        "tone": tone
+    })
 
 
 # -------------------------------
@@ -65,14 +75,18 @@ def upload():
     filepath = os.path.join(UPLOAD_FOLDER, audio.filename)
     audio.save(filepath)
 
+    # Convert speech → text
     raw_text = transcribe_audio(filepath)
 
-    clean_text = process_text(raw_text, "formal")
+    tone = request.form.get("tone", "formal")  # ✅ get tone from dropdown
+
+    clean_text = process_text(raw_text, tone)
 
     try:
         collection.insert_one({
             "raw_text": raw_text,
-            "clean_text": clean_text
+            "clean_text": clean_text,
+            "tone": tone
         })
     except Exception as e:
         print("MongoDB Error:", e)
@@ -124,6 +138,7 @@ Clean Text:
         }
     )
 
+
 @app.route("/download/latest")
 def download_latest():
 
@@ -149,29 +164,37 @@ Clean Text:
             "Content-Disposition": "attachment; filename=latest_transcript.txt"
         }
     )
+
+
+# -------------------------------
+# Search transcripts
+# -------------------------------
 @app.route("/search")
 def search():
 
-    query = request.args.get("q","")
+    query = request.args.get("q", "")
 
     if query == "":
-        transcripts = list(collection.find().sort("_id",-1))
+        transcripts = list(collection.find().sort("_id", -1))
     else:
         transcripts = list(collection.find({
-            "$or":[
-                {"raw_text":{"$regex":query,"$options":"i"}},
-                {"clean_text":{"$regex":query,"$options":"i"}}
+            "$or": [
+                {"raw_text": {"$regex": query, "$options": "i"}},
+                {"clean_text": {"$regex": query, "$options": "i"}}
             ]
-        }).sort("_id",-1))
+        }).sort("_id", -1))
 
     return render_template("history.html", transcripts=transcripts, search=query)
+
+
 @app.route("/test")
 def test():
     return "Server is running!"
+
 
 # -------------------------------
 # Run server
 # -------------------------------
 if __name__ == "__main__":
- port = int(os.environ.get("PORT", 5000))
- app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

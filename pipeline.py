@@ -1,7 +1,7 @@
 from filler_removal import remove_fillers
 from repetition_removal import remove_repetition
 from formatter import correct_grammar
-from tone_transformer import change_tone
+from tone_transformer import transform_tone
 
 def process_text(text, tone):
 
@@ -13,6 +13,6 @@ def process_text(text, tone):
 
     text = text.capitalize()
 
-    text = change_tone(text, tone)
+    text = transform_tone(text, tone)
 
     return text

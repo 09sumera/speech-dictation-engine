@@ -1,15 +1,28 @@
 import re
 
-fillers = [
-"uh", "uhh", "um", "umm", "like", "you know","Hmm"
-]
-
 def remove_fillers(text):
 
-    pattern = r'\b(' + '|'.join(fillers) + r')\b'
+    fillers = [
+        "um", "uh", "you know", "like", "actually",
+        "basically", "literally", "i mean"
+    ]
 
-    cleaned = re.sub(pattern, '', text, flags=re.IGNORECASE)
+    for f in fillers:
+        text = re.sub(rf"\b{f}\b", "", text, flags=re.IGNORECASE)
 
-    cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+    text = re.sub(r"\s+", " ", text)
 
-    return cleaned
+    return text.strip()
+
+
+def remove_repetition(text):
+
+    words = text.split()
+
+    clean = []
+
+    for word in words:
+        if len(clean) == 0 or clean[-1] != word:
+            clean.append(word)
+
+    return " ".join(clean)
