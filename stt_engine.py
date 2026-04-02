@@ -1,9 +1,23 @@
-import whisper
-
-model = whisper.load_model("base")
+import os
+from deepgram import DeepgramClient, PrerecordedOptions
 
 def transcribe_audio(filepath):
 
-    result = model.transcribe(filepath)
+    deepgram = DeepgramClient(os.getenv("DEEPGRAM_API_KEY"))
 
-    return result["text"]
+    with open(filepath, "rb") as audio:
+        buffer_data = audio.read()
+
+    options = PrerecordedOptions(
+        model="nova-2",
+        smart_format=True
+    )
+
+    response = deepgram.listen.prerecorded.v("1").transcribe_file(
+        {"buffer": buffer_data},
+        options
+    )
+
+    transcript = response["results"]["channels"][0]["alternatives"][0]["transcript"]
+
+    return transcript

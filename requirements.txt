@@ -12,3 +12,4 @@ tqdm==4.67.3
 openai-whisper
 ffmpeg-python
 imageio-ffmpeg
+deepgram-sdk
