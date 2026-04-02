@@ -3,6 +3,7 @@
 let recognition;
 let finalTranscript = "";
 let lastSpokenText = "";
+
 if ('webkitSpeechRecognition' in window) {
 
     recognition = new webkitSpeechRecognition();
@@ -26,51 +27,53 @@ if ('webkitSpeechRecognition' in window) {
             let text = event.results[i][0].transcript;
 
             if (event.results[i].isFinal) {
+
                 finalTranscript += text + " ";
+                let fullText = finalTranscript + interimTranscript;
+                lastSpokenText = fullText;
+
+                // Show live transcript
+                document.getElementById("liveText").value = fullText;
+
+                // ALWAYS get tone from dropdown
+                const toneSelect = document.getElementById("toneSelect");
+                let selectedTone = "formal";
+
+                if (toneSelect) {
+                    selectedTone = toneSelect.value.toLowerCase();
+                }
+
+                console.log("Tone being sent:", selectedTone);
+
+                // Send text to backend ONLY when final
+                fetch("/process_text", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        text: fullText,
+                        tone: selectedTone
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+
+                        if (data.cleaned) {
+                            document.getElementById("cleanOutput").innerText = data.cleaned;
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error("Backend error:", error);
+                    });
+
             } else {
                 interimTranscript += text;
             }
         }
 
-        let fullText = finalTranscript + interimTranscript;
-        lastSpokenText = fullText;
-
-        // Show live transcript
-        document.getElementById("liveText").value = fullText;
-
-        // ALWAYS get tone from dropdown
-        const toneSelect = document.getElementById("toneSelect");
-        let selectedTone = "formal";
-
-        if (toneSelect) {
-            selectedTone = toneSelect.value.toLowerCase();
-        }
-
-        // Debug (check browser console)
-        console.log("Tone being sent:", selectedTone);
-
-        // Send text to backend
-        fetch("/process_text", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                text: fullText,
-                tone: selectedTone
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-
-                if (data.cleaned) {
-                    document.getElementById("cleanOutput").innerText = data.cleaned;
-                }
-
-            })
-            .catch(error => {
-                console.error("Backend error:", error);
-            });
+        document.getElementById("liveText").value = finalTranscript + interimTranscript;
 
     };
 
@@ -118,6 +121,8 @@ function stopDictation() {
 
     recognition.stop();
 }
+
+
 // When tone changes, reprocess the last spoken text
 const toneSelect = document.getElementById("toneSelect");
 
