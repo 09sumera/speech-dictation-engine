@@ -1,15 +1,9 @@
-from faster_whisper import WhisperModel
+import whisper
 
-model = None
+model = whisper.load_model("base")
 
-def get_model():
-    global model
-    if model is None:
-        model = WhisperModel("tiny", device="cpu")
-    return model
+def transcribe_audio(filepath):
 
-def transcribe_audio(file_path):
-    model = get_model()
-    segments, info = model.transcribe(file_path)
-    text = " ".join([segment.text for segment in segments])
-    return text
+    result = model.transcribe(filepath)
+
+    return result["text"]

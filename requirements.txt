@@ -9,3 +9,5 @@ nltk==3.9.4
 regex==2026.3.32
 requests==2.33.1
 tqdm==4.67.3
+openai-whisper
+ffmpeg-python
