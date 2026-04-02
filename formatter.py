@@ -14,7 +14,7 @@ def correct_grammar(text):
 
     corrected = text
 
-    for match in result["matches"]:
+    for match in result.get("matches", []):
         if match["replacements"]:
             replacement = match["replacements"][0]["value"]
             offset = match["offset"]
