@@ -1,23 +1,22 @@
 import os
-from deepgram import DeepgramClient, PrerecordedOptions
+import requests
 
 def transcribe_audio(filepath):
 
-    deepgram = DeepgramClient(os.getenv("DEEPGRAM_API_KEY"))
+    api_key = os.getenv("DEEPGRAM_API_KEY")
+
+    url = "https://api.deepgram.com/v1/listen"
+
+    headers = {
+        "Authorization": f"Token {api_key}",
+        "Content-Type": "audio/wav"
+    }
 
     with open(filepath, "rb") as audio:
-        buffer_data = audio.read()
+        response = requests.post(url, headers=headers, data=audio)
 
-    options = PrerecordedOptions(
-        model="nova-2",
-        smart_format=True
-    )
+    result = response.json()
 
-    response = deepgram.listen.prerecorded.v("1").transcribe_file(
-        {"buffer": buffer_data},
-        options
-    )
-
-    transcript = response["results"]["channels"][0]["alternatives"][0]["transcript"]
+    transcript = result["results"]["channels"][0]["alternatives"][0]["transcript"]
 
     return transcript
